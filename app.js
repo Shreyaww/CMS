@@ -10,8 +10,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.engine('handlebars', engine({ defaultLayout: 'home' }));
 app.set('view engine', 'handlebars');
 
+// load routes
 const main = require('./routes/home/main');
+const admin = require('./routes/admin/admin');
+
+// use routes
 app.use('/', main);
+app.use('/admin', admin);
+
 
 // Start the server
 app.listen(8888, () => {
