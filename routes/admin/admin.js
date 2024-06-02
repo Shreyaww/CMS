@@ -19,9 +19,9 @@ router.get('/', (req, res) => {
 });
 
 // Route for the dashboard page
-router.get('/dashboard', (req, res) => {
-    res.render('admin/dashboard');
-});
+// router.get('/dashboard', (req, res) => {
+//     res.render('admin/dashboard');
+// });
 
 
 module.exports = router;
