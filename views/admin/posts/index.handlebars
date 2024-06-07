@@ -1,1 +1,30 @@
 <h1>ALL POSTS</h1>
+
+<table class="table table-bordered"> 
+
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Allow Comments</th>
+          
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {{#each posts}}
+
+        <tr>
+            <td>{{id}}</td>
+            <td>{{title}}</td>
+            <td>{{status}}</td>
+            <td>{{allowComments}}</td>
+            <td><a href = "/admin/posts/edit/{{id}}" class="btn btn-info">Edit</a> </td>
+        </tr>
+
+        {{/each}}
+
+    </tbody>
+</table>
