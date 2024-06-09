@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
 const Handlebars = require('handlebars');
+const methodOverrid = require('method-override');
 
 mongoose.connect('mongodb://localhost:27017/cms').then((db) =>{
     console.log("MONGO connected");
@@ -26,6 +27,9 @@ app.set('view engine', 'handlebars');
 //Body Parser 
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
+
+//Method Override
+app.use(methodOverrid('_method'));
 
 // load routes
 const main = require('./routes/home/main');

@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const User = require('../../models/Post');
+const faker = require('faker');
 
 //all: This method is used to handle all HTTP methods (GET, POST, PUT, DELETE, etc.). It registers a 
 //middleware or handler that will be executed for any type of HTTP request.
@@ -18,10 +20,22 @@ router.get('/', (req, res) => {
     res.render('admin/index');
 });
 
-// Route for the dashboard page
-// router.get('/dashboard', (req, res) => {
-//     res.render('admin/dashboard');
-// });
+router.post('/generate-fake-posts', (req,res) =>{
+
+    for(let i = 0; i < req.body.amount; i++){
+        
+        let post = new User();
+        
+        post.title = faker.name.title();
+        post.status = 'public';
+        post.allowComments =  faker.datatype.boolean();
+        post.body = faker.lorem.sentence();
+
+        post.save();
+    }
+    res.redirect('/admin/posts');
+})
+
 
 
 module.exports = router;

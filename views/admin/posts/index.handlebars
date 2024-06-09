@@ -1,6 +1,6 @@
 <h1>ALL POSTS</h1>
 
-<table class="table table-bordered"> 
+<table class="table table-bordered">
 
     <thead>
         <tr>
@@ -8,7 +8,7 @@
             <th>Title</th>
             <th>Status</th>
             <th>Allow Comments</th>
-          
+
         </tr>
     </thead>
 
@@ -21,7 +21,14 @@
             <td>{{title}}</td>
             <td>{{status}}</td>
             <td>{{allowComments}}</td>
-            <td><a href = "/admin/posts/edit/{{id}}" class="btn btn-info">Edit</a> </td>
+            <td><a href="/admin/posts/edit/{{id}}" class="btn btn-info">Edit</a> </td>
+
+            <td>
+                <form action="/admin/posts/{{id}}?_method=DELETE" method="post">
+                    <button type="submit" class="btn btn-danger">DELETE</button>
+                </form>
+
+            </td>
         </tr>
 
         {{/each}}
