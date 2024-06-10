@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
 const Handlebars = require('handlebars');
 const methodOverrid = require('method-override');
+const upload = require('express-fileupload');
 
 mongoose.connect('mongodb://localhost:27017/cms').then((db) =>{
     console.log("MONGO connected");
@@ -23,6 +24,10 @@ const {select} = require('./helpers/handlebars-helpers');
 // Setting up Handlebars
 app.engine('handlebars', engine( {handlebars: allowInsecurePrototypeAccess(Handlebars), defaultLayout: 'home' , helpers : {select : select}}));
 app.set('view engine', 'handlebars');
+
+//Upload Middleware 
+
+app.use(upload());
 
 //Body Parser 
 app.use(bodyParser.urlencoded({extended : true}));

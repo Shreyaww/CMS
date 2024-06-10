@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Post = require('../../models/Post');
+const { isEmpty, uploadDir } = require('../../helpers/upload-helper');
+const fs = require('fs');
+const path = require('path');
 
 router.all('/*', (req, res, next) => {
 
@@ -26,31 +29,65 @@ router.get('/create', (req, res) => {
 
 router.post('/create', (req, res) => {
 
-    let allowComments = true;
+    let errors = [];
 
-    if (req.body.allowComments) {
-        allowComments = true;
+    if (!req.body.title) {
+        errors.push({ message: "Please add a Title" })
+    }
+    if (!req.body.body) {
+        errors.push({ message: "Please add a Description" })
+    }
+
+    if (errors.length > 0) {
+        res.render('admin/posts/create', {
+            errors: errors
+        })
+
     }
     else {
-        allowComments = false;
+        let filename = 'public/uploads/IMG_0985.JPG';
+
+        if (!isEmpty(req.files)) {
+            // The req.files object contains files that were uploaded, and file refers to the specific file being processed.
+            let file = req.files.file;
+            filename = Date.now() + '-' + file.name;
+
+            file.mv('./public/uploads/' + filename, (err) => {
+                if (err) throw err;
+            })
+        }
+
+
+        let allowComments = true;
+
+        if (req.body.allowComments) {
+            allowComments = true;
+        }
+        else {
+            allowComments = false;
+        }
+
+        // constructor post 
+        const newPost = new Post({
+            title: req.body.title,
+            status: req.body.status,
+            allowComments: allowComments,
+            body: req.body.body,
+            file: filename
+        })
+
+        newPost.save().then(savedPost => {
+
+            console.log(savedPost);
+            res.redirect('/admin/posts')
+
+        }).catch(error => {
+            
+            console.log(error + "Could Not save")
+        });
     }
 
-    // constructor post 
-    const newPost = new Post({
-        title: req.body.title,
-        status: req.body.status,
-        allowComments: allowComments,
-        body: req.body.body
-    })
 
-    newPost.save().then(savedPost => {
-
-        console.log(savedPost);
-        res.redirect('/admin/posts')
-
-    }).catch(error => {
-        console.log("Could Not save")
-    });
 
     // console.log(req.body.allowComments);
 });
@@ -97,14 +134,18 @@ router.put('/edit/:id', (req, res) => {
 
 })
 
-router.delete('/:id', (req, res) =>{
+router.delete('/:id', (req, res) => {
     const postId = req.params.id;
 
-    Post.findByIdAndDelete(postId)
+    Post.findOneAndDelete(postId)
         .then(result => {
-            if (result) {
-                res.redirect('/admin/posts');
-            }
+
+            fs.unlink(uploadDir + result.file, (err) => {
+                if (result) {
+                    result.deleteOne();
+                    res.redirect('/admin/posts');
+                }
+            });
         })
 })
 
