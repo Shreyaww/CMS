@@ -7,6 +7,15 @@ router.all('/*', (req, res, next) =>{
 });
 // Route for the home page
 router.get('/', (req, res) => {
+
+    // req.session.shreya = 'Shreya';
+
+    // if(req.session.shreya){
+    //     console.log(`We Found ${req.session.shreya}`);
+    // }
+
+    
+
     res.render('home/index');
 });
 

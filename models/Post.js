@@ -3,10 +3,6 @@ const Schema = mongoose.Schema;
 
 const PostSchema = new Schema ({
 
-    // user: {
-        
-    // },
-
     title: {
         type : String, 
         required : true
@@ -29,6 +25,11 @@ const PostSchema = new Schema ({
 
     file : {
         type : String
+    },
+
+    date : {
+        type : Date,
+        default : Date.now()
     }
 
 })

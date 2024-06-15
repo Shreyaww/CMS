@@ -77,6 +77,8 @@ router.post('/create', (req, res) => {
         })
 
         newPost.save().then(savedPost => {
+            
+            req.flash('success_message', 'Post ' + savedPost.title  + ' was created successfully' )
 
             console.log(savedPost);
             res.redirect('/admin/posts')
@@ -107,8 +109,9 @@ router.get('/edit/:id', (req, res) => {
 
 router.put('/edit/:id', (req, res) => {
 
+
     Post.findOne({ _id: req.params.id })
-        .then(post => {
+        .then(post => { 
 
             let allowComments = true;
 
@@ -123,9 +126,22 @@ router.put('/edit/:id', (req, res) => {
             post.allowComments = allowComments;
             post.status = req.body.status;
             post.body = req.body.body;
+            //post.file = req.files.filename;
+
+            if (!isEmpty(req.files)) {
+        
+                let file = req.files.file;
+                filename = Date.now() + '-' + file.name;
+                post.file = filename;
+        
+                file.mv('./public/uploads/' + filename, (err) => {
+                    if (err) throw err;
+                })
+            }
 
             post.save().then(updatedPost => {
-
+                
+                req.flash('success_message' , ' Post was updated successfully' )
                 res.redirect('/admin/posts')
 
             })
@@ -137,12 +153,13 @@ router.put('/edit/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
     const postId = req.params.id;
 
-    Post.findOneAndDelete(postId)
+    Post.findOneAndDelete({_id : postId})
         .then(result => {
 
             fs.unlink(uploadDir + result.file, (err) => {
                 if (result) {
                     result.deleteOne();
+                    req.flash('success_message' , ' Post was deleted successfully' )
                     res.redirect('/admin/posts');
                 }
             });
